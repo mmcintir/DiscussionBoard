@@ -1,19 +1,33 @@
 @page
-@model DiscussionBoard.Pages.Discussions.Edit
+@model DiscussionBoard.Pages.Discussions.EditModel
 
-@{
-    Layout = null;
+@{ ViewData["Title"] = ""; }
+
+@if (ViewData["Error"] != null)
+{
+    <p>@ViewData["Error"]</p>
 }
+else
+{
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+    <div>
+        <form method="post">
+            <label asp-for="Input.Title"></label>
+            <input asp-for="Input.Title" class="form-control" />
+            <span asp-validation-for="Input.Title" class="text-danger"></span>
 
-<!DOCTYPE html>
+            <label asp-for="Input.Content"></label>
+            <textarea asp-for="Input.Content" class="form-control"></textarea>
+            <span asp-validation-for="Input.Content" class="text-danger"></span>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+    </body>
+    </html>
+
+}

@@ -1,19 +1,19 @@
-@page
-@model DiscussionBoard.Pages.Details
+@page "/Forum/{id}"
+@using DiscussionBoard.Models
+@model DiscussionBoard.Pages.DetailsModel
 
-@{
-    Layout = null;
+@{ ViewData["Title"] = "" ; }
+
+@if (ViewData["Error"] != null)
+{
+    <p>@ViewData["Error"]</p>
+}
+else
+{
+    <h1>Forums</h1>
+    @foreach (var thread in Model.Items)
+    {
+        <partial name="/Pages/Forums/_ThreadCard.cshtml" model="thread" />
+    }
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>

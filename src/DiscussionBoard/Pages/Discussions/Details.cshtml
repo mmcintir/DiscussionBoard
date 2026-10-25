@@ -1,19 +1,28 @@
-@page
-@model DiscussionBoard.Pages.Discussions.Details
+@page "/Discussion/{threadId}"
+@model DiscussionBoard.Pages.Discussions.DetailsModel
 
-@{
-    Layout = null;
+@{ ViewData["Title"] = "" ; }
+
+@if (ViewData["Error"] != null)
+{
+    <p>@ViewData["Error"]</p>
+}
+else
+{
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+    <div>
+        <h1>@Model.Discussion.Title</h1>
+        <p>@Model.Discussion.Content</p>
+        @foreach (var node in Model.Nodes)
+        {
+            <partial name="/Pages/Discussions/_PostTree.cshtml" model="node" />
+        }
+    </div>
+    </body>
+    </html>
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
-</div>
-</body>
-</html>

@@ -10,7 +10,7 @@ namespace DiscussionBoard
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +41,9 @@ namespace DiscussionBoard
             builder.Services.AddRazorPages();
 
             builder.Services.AddSingleton<ILogReader, JsonLogReader>();
+            builder.Services.AddScoped<ForumService>();
+            builder.Services.AddScoped<DiscussionThreadService>();
+            builder.Services.AddScoped<PostService>();
 
             var app = builder.Build();
 
@@ -48,6 +51,7 @@ namespace DiscussionBoard
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
+                // await DevelopmentSeedService.SeedAsync(app.Services);
             }
             else
             {
