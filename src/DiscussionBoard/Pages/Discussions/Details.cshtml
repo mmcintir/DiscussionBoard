@@ -17,6 +17,7 @@ else
     <div>
         <h1>@Model.Discussion.Title</h1>
         <p>@Model.Discussion.Content</p>
+        <partial name="_Author" model="Model.Discussion.ApplicationUser" />
         @foreach (var node in Model.Nodes)
         {
             <partial name="/Pages/Discussions/_PostTree.cshtml" model="node" />

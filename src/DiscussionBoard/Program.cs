@@ -38,12 +38,18 @@ namespace DiscussionBoard
                     options.SignIn.RequireConfirmedAccount = !builder.Environment.IsDevelopment())
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddRazorPages();
+            builder.Services.AddRazorPages(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Forums");
+                options.Conventions.AuthorizeFolder("/Discussions");
+                options.Conventions.AuthorizePage("/MyProfile");
+            });
 
             builder.Services.AddSingleton<ILogReader, JsonLogReader>();
             builder.Services.AddScoped<ForumService>();
             builder.Services.AddScoped<DiscussionThreadService>();
             builder.Services.AddScoped<PostService>();
+            builder.Services.AddScoped<IUserProfileService, UserProfileService>();
 
             var app = builder.Build();
 

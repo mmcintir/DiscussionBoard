@@ -2,6 +2,7 @@
 <article class="card mb-3">
     <div class="card-body">
         <a class="h5" asp-page="/Discussions/Details" asp-route-threadID="@Model.Id">@Model.Title</a>
+        <partial name="_Author" model="Model.ApplicationUser" />
         <p>@Model.Content</p>
     </div>
 

@@ -1,0 +1,49 @@
+@page
+@using DiscussionBoard.Services
+@model DiscussionBoard.Pages.MyProfileModel
+
+@{
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+@if (ViewData["UpdateStatus"] != null)
+{
+    <p>@ViewData["UpdateStatus"]</p>
+    <a asp-page="/MyProfile">Back</a>
+}
+else
+{
+    <div>
+        <h1>My Profile</h1>
+
+        <img src="@AvatarCatalog.ImagePath(Model.Input.AvatarId)" alt="Your current avatar" width="96"/>
+
+        <form method="post">
+            <label asp-for="Input.DisplayName"></label>
+            <input asp-for="Input.DisplayName"/>
+            <span asp-validation-for="Input.DisplayName"></span>
+
+            <p>Choose an avatar</p>
+            @foreach (var option in AvatarCatalog.Options)
+            {
+                <label>
+                    <input type="radio" asp-for="Input.AvatarId" value="@option.Id"/>
+                    <img src="@AvatarCatalog.ImagePath(option.Id)" alt="@option.Id avatar" width="48"/>
+                    @option.Id
+                </label>
+            }
+            <span asp-validation-for="Input.AvatarId"></span>
+            <div>
+                <button class="btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+}
+</body>
+</html>

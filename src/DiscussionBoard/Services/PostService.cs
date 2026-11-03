@@ -15,7 +15,7 @@ namespace DiscussionBoard.Services
 
         public async Task<List<Post>> GetForThreadAsync(int threadId)
         {
-            return await _dbContext.Posts.Where(p => p.DiscussionThreadId == threadId && !p.IsDeleted).ToListAsync();
+            return await _dbContext.Posts.Include(p => p.ApplicationUser ).Where(p => p.DiscussionThreadId == threadId && !p.IsDeleted).ToListAsync();
         }
 
         public async Task AddAsync(Post post)

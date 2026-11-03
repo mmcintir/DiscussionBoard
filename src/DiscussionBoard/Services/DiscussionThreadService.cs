@@ -24,12 +24,12 @@ namespace DiscussionBoard.Services
 
         public async Task<DiscussionThread?> GetAsync(int id)
         {
-            return await _dbContext.DiscussionThreads.FirstOrDefaultAsync(thread => thread.Id == id);
+            return await _dbContext.DiscussionThreads.Include(d => d.ApplicationUser).FirstOrDefaultAsync(thread => thread.Id == id);
         }
 
         public async Task<List<DiscussionThread>> GetForForumAsync(int forumId)
         {
-            return await _dbContext.DiscussionThreads.Where(t => t.ForumId == forumId && !t.IsDeleted).ToListAsync();
+            return await _dbContext.DiscussionThreads.Include(t => t.ApplicationUser).Where(t => t.ForumId == forumId && !t.IsDeleted).ToListAsync();
         }
 
         public async Task AddAsync(DiscussionThread thread)
