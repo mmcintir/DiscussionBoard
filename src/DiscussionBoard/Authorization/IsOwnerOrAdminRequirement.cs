@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace DiscussionBoard.Authorization
 {
-    public class IsOwnerOrAdminRequirement
+    public class IsOwnerOrAdminRequirement : IAuthorizationRequirement
     {
-        
+
     }
 }

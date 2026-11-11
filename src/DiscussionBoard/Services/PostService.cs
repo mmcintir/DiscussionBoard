@@ -22,9 +22,27 @@ namespace DiscussionBoard.Services
         {
             if (post == null)
             {
-                throw new ArgumentNullException("post");
+                throw new ArgumentNullException(nameof(post));
             }
             await _dbContext.Posts.AddAsync(post);
+        }
+
+        public async Task<Post?> GetAsync(int id)
+        {
+            return await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task UpdateAsync(Post post)
+        {
+            Post existing = await _dbContext.Posts.FirstOrDefaultAsync(p => p.Id == post.Id);
+            if (existing == null)
+            {
+                throw new ArgumentNullException(nameof(post));
+            }
+
+            existing.Title = post.Title;
+            existing.Content = post.Content;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

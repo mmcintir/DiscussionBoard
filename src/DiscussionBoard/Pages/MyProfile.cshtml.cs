@@ -25,7 +25,7 @@ namespace DiscussionBoard.Pages
 
         public async Task OnGetAsync()
         {
-            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User) ?? new ApplicationUser();
+            ApplicationUser user = await _userManager.GetUserAsync(User) ?? new ApplicationUser();
 
             Input = new UserProfile
             {

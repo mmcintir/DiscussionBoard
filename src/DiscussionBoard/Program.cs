@@ -1,8 +1,10 @@
+using DiscussionBoard.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DiscussionBoard.Data;
 using DiscussionBoard.Models;
 using DiscussionBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Serilog;
 using Serilog.Formatting.Compact;
 
@@ -36,8 +38,8 @@ namespace DiscussionBoard
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
                     options.SignIn.RequireConfirmedAccount = !builder.Environment.IsDevelopment())
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-
             builder.Services.AddRazorPages(options =>
             {
                 options.Conventions.AuthorizeFolder("/Forums");
@@ -50,6 +52,15 @@ namespace DiscussionBoard
             builder.Services.AddScoped<DiscussionThreadService>();
             builder.Services.AddScoped<PostService>();
             builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+            builder.Services.AddScoped<IApplicationAuthorizationService,  ApplicationAuthorizationService>();
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(ApplicationAuthorizationPolicies.IsOwnerOrAdmin, policy =>
+                    policy.AddRequirements(new IsOwnerOrAdminRequirement()));
+            });
+
+            builder.Services.AddScoped<IAuthorizationHandler, IsOwnerOrAdminHandler>();
 
             var app = builder.Build();
 
@@ -79,6 +90,18 @@ namespace DiscussionBoard
             app.MapRazorPages()
                 .WithStaticAssets();
 
+            if (args.Contains("--bootstrap-admin", StringComparer.Ordinal))
+            {
+                if (!app.Environment.IsDevelopment())
+                {
+                    throw new InvalidOperationException("This bootstrap tool is Development-only.");
+                }
+                await AdminBootstrapper.BootstrapAsync(
+                    app.Services,
+                    app.Configuration["BootstrapAdmin:Email"]
+                );
+                return;
+            }
             app.Run();
         }
     }

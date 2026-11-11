@@ -6,11 +6,11 @@ namespace DiscussionBoard.Models
     [BindProperties]
     public class ThreadValidationModel
     {
-        [MinLength(1)]
-        [MaxLength(50)]
+        [MinLength(3)]
+        [MaxLength(160)]
         public string Title { get; set; }
         [MinLength(1)]
-        [MaxLength(500)]
+        [MaxLength(10000)]
         public string Content { get; set; }
     }
 }

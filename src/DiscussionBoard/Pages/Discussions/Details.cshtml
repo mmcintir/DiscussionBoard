@@ -1,5 +1,8 @@
 @page "/Discussion/{threadId}"
+@using DiscussionBoard.Authorization
 @model DiscussionBoard.Pages.Discussions.DetailsModel
+@inject IApplicationAuthorizationService AuthorizationService
+
 
 @{ ViewData["Title"] = "" ; }
 
@@ -18,6 +21,12 @@ else
         <h1>@Model.Discussion.Title</h1>
         <p>@Model.Discussion.Content</p>
         <partial name="_Author" model="Model.Discussion.ApplicationUser" />
+
+        @if (await AuthorizationService.CanEditAsync(User, Model.Discussion))
+        {
+            <a asp-page="/Discussions/Edit" asp-route-id="@Model.Discussion.Id">Edit</a>
+        }
+
         @foreach (var node in Model.Nodes)
         {
             <partial name="/Pages/Discussions/_PostTree.cshtml" model="node" />

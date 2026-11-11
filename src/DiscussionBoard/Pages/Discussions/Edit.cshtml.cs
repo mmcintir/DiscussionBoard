@@ -1,29 +1,41 @@
+using DiscussionBoard.Authorization;
 using DiscussionBoard.Models;
 using DiscussionBoard.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace DiscussionBoard.Pages.Discussions
 {
-    public class EditModel : PageModel
+    [Authorize]
+    public class ThreadEditModel : PageModel
     {
         private readonly DiscussionThreadService _threadService;
+        private readonly IApplicationAuthorizationService _authorizationService;
 
-        public EditModel(DiscussionThreadService threadService)
+        public ThreadEditModel(DiscussionThreadService threadService,  IApplicationAuthorizationService authorizationService)
         {
             _threadService = threadService;
+            _authorizationService = authorizationService;
         }
 
         [BindProperty]
-        public ThreadValidationModel Input { get; set; } = new ThreadValidationModel();
+        public DiscussionEditViewModel Input { get; set; } = new DiscussionEditViewModel();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var thread = await _threadService.GetAsync(id);
+
             if (thread == null)
             {
                 ViewData["Error"] = ("Thread {ThreadId} not found for update", id);
-                return Page();
+                return NotFound();
+            }
+
+
+            if (!await _authorizationService.CanEditAsync(User, thread))
+            {
+                return Forbid();
             }
 
             Input.Title = thread.Title;
@@ -34,11 +46,19 @@ namespace DiscussionBoard.Pages.Discussions
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var thread = await _threadService.GetAsync(id);
+
             if (thread == null)
             {
                 ViewData["Error"] = ("Thread {ThreadId} not found for update", id);
-                return Page();
+                return NotFound();
             }
+
+            if (!await _authorizationService.CanEditAsync(User, thread))
+            {
+                return Forbid();
+            }
+
+
             thread.Title = Input.Title;
             thread.Content = Input.Content;
             try
@@ -50,7 +70,7 @@ namespace DiscussionBoard.Pages.Discussions
                 ViewData["Error"] = "Error updating thread";
                 Console.WriteLine(e);
             }
-            return RedirectToPage("/Discussions/Detail", new { threadId = thread.Id });
+            return RedirectToPage("/Discussions/Details", new { threadId = thread.Id });
         }
     }
 }
